@@ -1,5 +1,4 @@
 import socket
-import time
 from Input import get_data
 from config_utils import read_config
 
@@ -34,8 +33,6 @@ def setup_server():
 def main():
     """Main function to process and send data continuously."""
     client_socket = setup_server()
-    refresh_rate = float(read_config('Output Settings', 'Refresh Rate'))  # Read refresh rate from config
-
     try:
         while True:
             data = get_data()  # This function needs to be defined to fetch or generate data
@@ -43,7 +40,6 @@ def main():
             formatted_data = {key: format_data(data[key], output_format) for key in data.keys()}
             data_string = ','.join(f"{key}:{formatted_data[key]}" for key in formatted_data)
             client_socket.sendall(data_string.encode('utf-8'))
-            time.sleep(refresh_rate)  # Wait according to the refresh rate before sending the next data packet
     except KeyboardInterrupt:
         print("Server shutdown requested.")
     finally:

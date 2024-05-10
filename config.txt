@@ -1,5 +1,5 @@
 [Input Settings]
-RefreshRate = 1000
+RefreshRate = 100
 InputFormat = Hexadecimal
 
 [Output Settings]
@@ -15,4 +15,4 @@ Temperature = Byte 5, Add 0
 Pressure = Byte 6, Subtract 0
 
 [Test Parameters]
-TestRefreshRate = 50
+TestRefreshRate = 100

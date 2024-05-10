@@ -1,67 +1,53 @@
+import sys
 import socket
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
-from PyQt5.QtCore import QTimer
 from Input import get_data
 from config_utils import read_config
 
-class DigitalCluster(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-        self.initTimer()
-        self.setupServer()
+def format_data(value, format):
+    print(f"Formatting value: {value} with format: {format}")  # Debugging statement
+    if isinstance(value, str):
+        value = int(value, 16)  # Convert hex string to integer if necessary
 
-    def setupServer(self):
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server_socket.bind(('localhost', 9999))
-        self.server_socket.listen(1)
-        self.client_socket, _ = self.server_socket.accept()
-        print("Client connected.")
+    if "Hexadecimal" in format:
+        formatted = hex(value).upper().replace('0X', '')
+    elif "Binary" in format:
+        formatted = bin(value)[2:]
+    elif "Decimal" in format:
+        formatted = str(value)
+    else:
+        formatted = str(value)  # Fallback if format isn't recognized
+    print(f"Formatted output: {formatted}")  # More debugging
+    return formatted
 
-    def send_data(self, data):
+def setup_server():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('localhost', 9999))
+    server_socket.listen(1)
+    print("Server is waiting for a client to connect...")
+    return server_socket
+
+def main():
+    server_socket = setup_server()
+    client_socket, addr = server_socket.accept()
+    print(f"Client connected from {addr}")
+
+    while True:
         try:
-            self.client_socket.sendall(data.encode('utf-8'))
-            print("Data sent:", data)
-        except BrokenPipeError:
-            print("Connection lost... attempting to reconnect.")
-            self.client_socket, _ = self.server_socket.accept()
+            data = get_data()  # Fetch data from your sensors or internal logic
+            formatted_data = {key: format_data(value, 'Decimal') for key, value in data.items()}
+            data_string = ','.join(f"{key}:{value}" for key, value in formatted_data.items())
+            client_socket.sendall(data_string.encode('utf-8'))
+        except (BrokenPipeError, ConnectionResetError):
+            print("Connection lost... trying to reconnect.")
+            client_socket, addr = server_socket.accept()
+            print(f"Client reconnected from {addr}")
+        except KeyboardInterrupt:
+            print("Server is shutting down.")
+            break
 
-    def initUI(self):
-        self.setWindowTitle("Vehicle Digital Cluster")
-        layout = QVBoxLayout(self)
-        self.rpm_label = QLabel("RPM: 0")
-        self.speed_label = QLabel("Speed: 0 km/h")
-        self.temp_label = QLabel("Engine Coolant Temp: 0°C")
-        self.pressure_label = QLabel("Oil Pressure: 0 bar")
-        layout.addWidget(self.rpm_label)
-        layout.addWidget(self.speed_label)
-        layout.addWidget(self.temp_label)
-        layout.addWidget(self.pressure_label)
-        self.setLayout(layout)
-
-    def initTimer(self):
-        refresh_rate = int(read_config('Input Settings', 'RefreshRate'))
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.updateData)
-        self.timer.start(refresh_rate)
-
-    def updateData(self):
-        data = get_data()
-        formatted_data = f"{data['rpm']},{data['speed']},{data['temp']},{data['pressure']}"
-        self.send_data(formatted_data)
-        self.rpm_label.setText(f"RPM: {data['rpm']}")
-        self.speed_label.setText(f"Speed: {data['speed']} km/h")
-        self.temp_label.setText(f"Engine Coolant Temp: {data['temp']}°C")
-        self.pressure_label.setText(f"Oil Pressure: {data['pressure']} bar")
-
-    def closeEvent(self, event):
-        self.client_socket.close()
-        self.server_socket.close()
-        super().closeEvent(event)
+    client_socket.close()
+    server_socket.close()
 
 if __name__ == "__main__":
-    app = QApplication([])
-    ex = DigitalCluster()
-    ex.show()
-    sys.exit(app.exec_())
+    main()

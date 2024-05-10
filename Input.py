@@ -6,6 +6,7 @@ def parse_data(line, key):
     byte_position = int(settings[0].strip().split(' ')[1]) - 1
     operation = settings[1].strip().split(' ')[0]
     operand = int(settings[1].strip().split(' ')[1])
+    print(f"Settings for {key}: Byte Position={byte_position}, Operation={operation}, Operand={operand}")  # Debug output
 
     value = int(line[byte_position*3:(byte_position+1)*3], 16)  # Assumes byte data are spaced by a single space
 

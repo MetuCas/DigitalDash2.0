@@ -1,6 +1,6 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
-from PySide6.QtCore import QTimer
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
+from PyQt5.QtCore import QTimer
 from Input import get_data
 from config_utils import read_config
 
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = DigitalCluster()
     ex.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec_())

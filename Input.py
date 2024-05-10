@@ -1,4 +1,3 @@
-# Input.py
 import serial
 from config_utils import read_config
 
@@ -13,7 +12,7 @@ def parse_data(line, key):
     if operation == "Multiply":
         return value * operand
     elif operation == "Divide":
-        return value / operand
+        return int(value / operand)  # Ensure division results are converted to int
     elif operation == "Add":
         return value + operand
     elif operation == "Subtract":

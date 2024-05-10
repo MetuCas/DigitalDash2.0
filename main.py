@@ -13,7 +13,6 @@ class DigitalCluster(QWidget):
         self.setupServer()
 
     def setupServer(self):
-        """Creates a server socket to accept connections."""
         print("Creating server socket...")
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -23,7 +22,6 @@ class DigitalCluster(QWidget):
         print("Client connected.")
 
     def send_data(self, data):
-        """Sends data to the client and handles connection errors."""
         try:
             self.client_socket.sendall(data.encode('utf-8'))
             print("Data sent:", data)
@@ -32,7 +30,6 @@ class DigitalCluster(QWidget):
             self.client_socket, _ = self.server_socket.accept()
 
     def initUI(self):
-        """Initializes the user interface."""
         self.setWindowTitle("Vehicle Digital Cluster")
         self.setGeometry(100, 100, 480, 320)
         layout = QVBoxLayout(self)
@@ -41,7 +38,6 @@ class DigitalCluster(QWidget):
         self.temp_label = QLabel("Engine Coolant Temp: 0°C", self)
         self.pressure_label = QLabel("Oil Pressure: 0 bar", self)
 
-        # Style the labels
         labels = [self.rpm_label, self.speed_label, self.temp_label, self.pressure_label]
         for label in labels:
             label.setAlignment(Qt.AlignCenter)
@@ -50,14 +46,12 @@ class DigitalCluster(QWidget):
         self.setLayout(layout)
 
     def initTimer(self):
-        """Initializes the timer for updating GUI elements."""
         refresh_rate = int(read_config('Input Settings', 'RefreshRate'))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateData)
         self.timer.start(refresh_rate)
 
     def updateData(self):
-        """Fetches data and updates the GUI, then sends data to the client."""
         data = get_data()
         self.rpm_label.setText(f"RPM: {data['rpm']}")
         self.speed_label.setText(f"Speed: {data['speed']} km/h")
@@ -67,7 +61,6 @@ class DigitalCluster(QWidget):
         self.send_data(data_string)
 
     def closeEvent(self, event):
-        """Ensures sockets are closed when the application is closed."""
         self.client_socket.close()
         self.server_socket.close()
         super().closeEvent(event)

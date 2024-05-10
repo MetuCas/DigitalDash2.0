@@ -1,5 +1,5 @@
 [Input Settings]
-RefreshRate = 100
+RefreshRate = 1000
 InputFormat = Hexadecimal
 
 [Output Settings]
@@ -10,10 +10,10 @@ Refresh Rate = 1
 Enabled = True
 
 [Serial Settings]
-RPM = Byte 3, Divide 2 Multiply 2
-Speed = Byte 4, Multiply 1
-Temperature = Byte 5, Add 0
-Pressure = Byte 6, Subtract 0
+RPM = Byte 1
+Speed = Byte 2
+Temperature = Byte 3
+Pressure = Byte 4
 
 [Test Parameters]
-TestRefreshRate = 100
+TestRefreshRate = 1000

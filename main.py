@@ -1,43 +1,43 @@
-import socket
+import sys
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
+from PySide6.QtCore import QTimer
 from Input import get_data
 from config_utils import read_config
-import time
 
-def format_data(value, format):
-    """Formats data based on the specified format."""
-    if isinstance(value, str):
-        value = int(value, 16)  # Convert hex string to integer if necessary
-    if format == "Hexadecimal":
-        return hex(value).upper().replace('0X', '')
-    elif format == "Binary":
-        return bin(value)[2:]
-    elif format == "Decimal":
-        return str(value)
-    return value
+class DigitalCluster(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+        self.initTimer()
 
-def setup_server():
-    """Sets up a server socket to accept a connection."""
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', 9999))
-    server_socket.listen(1)
-    print("Server is waiting for a client to connect...")
-    client_socket, _ = server_socket.accept()
-    print("Client connected.")
-    return client_socket
+    def initUI(self):
+        self.setWindowTitle("Vehicle Digital Cluster")
+        layout = QVBoxLayout(self)
+        self.rpm_label = QLabel("RPM: 0")
+        self.speed_label = QLabel("Speed: 0 km/h")
+        self.temp_label = QLabel("Engine Coolant Temp: 0°C")
+        self.pressure_label = QLabel("Oil Pressure: 0 bar")
+        layout.addWidget(self.rpm_label)
+        layout.addWidget(self.speed_label)
+        layout.addWidget(self.temp_label)
+        layout.addWidget(self.pressure_label)
+        self.setLayout(layout)
 
-def main():
-    client_socket = setup_server()
-    refresh_rate = float(read_config('Output Settings', 'Refresh Rate'))  # Ensure this exists in your config.txt
+    def initTimer(self):
+        refresh_rate = int(read_config('Input Settings', 'RefreshRate'))  # Correctly using read_config
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateData)
+        self.timer.start(refresh_rate)
 
-    while True:
-        data = get_data()  # Ensure this function correctly fetches the necessary data
-        output_format = read_config('Output Settings', 'OutputFormat')  # Ensure this is correctly specified in config.txt
-        formatted_data = {key: format_data(value, output_format) for key, value in data.items()}
-        data_string = ','.join(f"{key}:{formatted_data[key]}" for key in formatted_data)
-        client_socket.sendall(data_string.encode('utf-8'))
-        time.sleep(refresh_rate)
-
-    client_socket.close()
+    def updateData(self):
+        data = get_data()
+        self.rpm_label.setText(f"RPM: {data['rpmF']}")
+        self.speed_label.setText(f"Speed: {data['speedF']} km/h")
+        self.temp_label.setText(f"Engine Coolant Temp: {data['tempF']}°C")
+        self.pressure_label.setText(f"Oil Pressure: {data['pressureF']} bar")
 
 if __name__ == "__main__":
-    main()
+    app = QApplication(sys.argv)
+    ex = DigitalCluster()
+    ex.show()
+    sys.exit(app.exec())

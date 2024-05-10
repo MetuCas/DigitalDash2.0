@@ -4,7 +4,7 @@ InputFormat = Hexadecimal
 
 [Output Settings]
 OutputFormat = Decimal
-Refresh Rate = 100
+Refresh Rate = 1
 
 [Test Mode]
 Enabled = True

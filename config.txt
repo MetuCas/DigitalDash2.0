@@ -7,6 +7,7 @@ OutputFormat = Decimal
 
 [Test Mode]
 Enabled = True
+Refresh Rate = 100
 
 [Serial Settings]
 RPM = Byte 3, Divide 2 Multiply 2

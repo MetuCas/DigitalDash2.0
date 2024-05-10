@@ -1,33 +1,34 @@
-# main.py
 import sys
+import socket
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import QTimer
 from Input import get_data
 from config_utils import read_config
-
-def format_data(value, format):
-    print(f"Formatting value: {value} with format: {format}")  # Debugging statement
-    if isinstance(value, str):
-        value = int(value, 16)  # Convert hex string to integer if necessary
-
-    if "Hexadecimal" in format:
-        formatted = hex(value).upper().replace('0X', '')
-    elif "Binary" in format:
-        formatted = bin(value)[2:]
-    elif "Decimal" in format:
-        formatted = str(value)
-    else:
-        formatted = str(value)  # Fallback if format isn't recognized
-    print(f"Formatted output: {formatted}")  # More debugging
-    return formatted
 
 class DigitalCluster(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
         self.initTimer()
+        self.setupServer()
+
+    def setupServer(self):
+        # Set up the server socket
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind(('localhost', 9999))  # Listen on localhost port 9999
+        self.server_socket.listen(1)  # Listen for 1 connection
+        self.client_socket, _ = self.server_socket.accept()  # Accept a connection
+
+    def send_data(self, data):
+        # Send data to the connected client
+        try:
+            self.client_socket.sendall(data.encode('utf-8'))
+        except BrokenPipeError:
+            print("Connection lost... attempting to reconnect.")
+            self.client_socket, _ = self.server_socket.accept()
 
     def initUI(self):
+        # Set up the user interface
         self.setWindowTitle("Vehicle Digital Cluster")
         layout = QVBoxLayout(self)
         self.rpm_label = QLabel("RPM: 0")
@@ -41,20 +42,28 @@ class DigitalCluster(QWidget):
         self.setLayout(layout)
 
     def initTimer(self):
+        # Set up a timer to periodically update the data
         refresh_rate = int(read_config('Input Settings', 'RefreshRate'))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateData)
         self.timer.start(refresh_rate)
 
     def updateData(self):
-        output_format = read_config('Output Settings', 'OutputFormat').split('#')[0].strip()  # Strip out comments and whitespace
-        print("Output Format:", output_format)  # Debugging print statement
+        # Fetch new data and update the UI
+        output_format = read_config('Output Settings', 'OutputFormat').split('#')[0].strip()
         data = get_data()
-        self.rpm_label.setText(f"RPM: {format_data(data['rpm'], output_format)}")
-        self.speed_label.setText(f"Speed: {format_data(data['speed'], output_format)} km/h")
-        self.temp_label.setText(f"Engine Coolant Temp: {format_data(data['temp'], output_format)}°C")
-        self.pressure_label.setText(f"Oil Pressure: {format_data(data['pressure'], output_format)} bar")
+        self.rpm_label.setText(f"RPM: {data['rpm']}")
+        self.speed_label.setText(f"Speed: {data['speed']} km/h")
+        self.temp_label.setText(f"Engine Coolant Temp: {data['temp']}°C")
+        self.pressure_label.setText(f"Oil Pressure: {data['pressure']} bar")
+        data_string = f"{data['rpm']}, {data['speed']}, {data['temp']}, {data['pressure']}"
+        self.send_data(data_string)
 
+    def closeEvent(self, event):
+        # Clean up sockets when closing the application
+        self.client_socket.close()
+        self.server_socket.close()
+        super().closeEvent(event)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

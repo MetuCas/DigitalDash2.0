@@ -4,10 +4,10 @@ InputFormat = Hexadecimal
 
 [Output Settings]
 OutputFormat = Decimal
+Refresh Rate = 100
 
 [Test Mode]
 Enabled = True
-Refresh Rate = 100
 
 [Serial Settings]
 RPM = Byte 3, Divide 2 Multiply 2

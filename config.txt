@@ -1,0 +1,18 @@
+[Input Settings]
+RefreshRate = 1000
+InputFormat = Hexadecimal
+
+[Output Settings]
+OutputFormat = Decimal
+
+[Test Mode]
+Enabled = True
+
+[Serial Settings]
+RPM = Byte 3, Divide 2 Multiply 2
+Speed = Byte 4, Multiply 1
+Temperature = Byte 5, Add 0
+Pressure = Byte 6, Subtract 0
+
+[Test Parameters]
+TestRefreshRate = 50

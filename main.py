@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
 from PyQt5.QtCore import QTimer
 from Input import get_data
@@ -36,8 +37,14 @@ class DigitalCluster(QWidget):
         self.temp_label.setText(f"Engine Coolant Temp: {data['tempF']}°C")
         self.pressure_label.setText(f"Oil Pressure: {data['pressureF']} bar")
 
-if __name__ == "__main__":
+def run_application():
     app = QApplication(sys.argv)
     ex = DigitalCluster()
     ex.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    if os.getenv('DISPLAY', '') == '':
+        print('No display found. Using :0.0.')
+        os.environ.__setitem__('DISPLAY', ':0.0')
+    run_application()

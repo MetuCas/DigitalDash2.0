@@ -79,19 +79,19 @@ for i, (key, value) in enumerate(text_dict.items()):
 
 def draw_rpm(surface, rpm_value):
     rpm_surface = font_rpm.render(f"RPM: {rpm_value}", True, color_map['WHITE'])
-    rpm_rect = rpm_surface.get_rect(center=(screen_width // 2, screen_height // 4))  # Center top position
+    rpm_rect = rpm_surface.get_rect(center=(screen_width // 2, screen_height // 2))
     surface.blit(rpm_surface, rpm_rect)
 
 def draw_circles(surface, rpm_value):
     radius = 20
     gap = 10
     total_width = 10 * (2 * radius + gap) - gap
-    start_x = (screen_width - total_width) // 2
+    start_x = (screen_width - total_width) / 2
     for i in range(10):
         x = start_x + i * (2 * radius + gap)
         y = 50  # Top of the screen
         color = color_map['GRAY']  # Default color
-        if rpm_value >= (i + 1) * 1000:
+        if rpm_value >= (i + 1) * 750:
             if i < 5:
                 color = color_map['GREEN']
             elif i < 7:

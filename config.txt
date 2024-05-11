@@ -11,11 +11,11 @@ Enabled = True
 
 [Serial Settings]
 RPM = Byte 1
-Speed = Byte 2
-Temperature = Byte 3
-Pressure = Byte 4
-Voltage = Byte 5
-Oil Temperature = Byte 6
+KPH = Byte 2
+WTR = Byte 3
+BAR = Byte 4
+VLT = Byte 5
+OIL = Byte 6
 
 [Test Parameters]
 TestRefreshRate = 1000

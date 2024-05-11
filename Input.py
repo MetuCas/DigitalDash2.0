@@ -11,7 +11,6 @@ def parse_serial_data(line, key):
     processed_value = apply_operations(raw_value, operations)
     return processed_value
 
-#Not yet fully implemented
 def apply_operations(value, operations):
     for operation in operations:
         op, num = operation.strip().split(' ')
@@ -39,18 +38,15 @@ def format_output(value):
 def get_serial_data():
     ser = serial.Serial('COM3', 9600, timeout=1)
     line = ser.readline().decode('utf-8').strip()
-    # Added parsing for 'voltage' and 'oil temp'
     data = {
         'rpm': parse_serial_data(line, "RPM"),
-        'speed': parse_serial_data(line, "KPH"),
-        'temp': parse_serial_data(line, "WTR"),
-        'pressure': parse_serial_data(line, "BAR"),
-        'voltage': parse_serial_data(line, "VLT"),  # New
-        'oil_temp': parse_serial_data(line, "OIL")  # New
+        'kph': parse_serial_data(line, "KPH"),
+        'wtr': parse_serial_data(line, "WTR"),
+        'bar': parse_serial_data(line, "BAR"),
+        'vlt': parse_serial_data(line, "VLT"),
+        'oil': parse_serial_data(line, "OIL")
     }
-    print("Parsed data:", data)  # Debugging output
     return data
-
 
 def process_data(data):
     processed_data = {k + 'F': format_output(int(v, 16)) for k, v in data.items()}

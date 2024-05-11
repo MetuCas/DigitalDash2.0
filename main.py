@@ -101,32 +101,15 @@ while running:
     # Fetch data for each frame to update the display
     data = get_data()  # Ensure this line is inside the while loop to refresh the data
 
-    # Initialize rpm_value with a default value, in case it's not in 'data'
-    rpm_value = "0"  # Default value if 'rpmF' is missing
-
-    try:
-        if 'rpmF' in data:
-            rpm_value = data['rpmF']
-        else:
-            print("Data key missing: 'rpmF'")
-        
-        for box, key in zip(boxes, text_dict.keys()):
-            formatted_key = key + 'F'
-            if formatted_key in data:
-                box.text = f"{key}: {data[formatted_key]}"
-            else:
-                print(f"Missing key in data: {formatted_key}")  # Debug missing keys
-    except KeyError as e:
-        print(f"Data key missing: {str(e)}")  # General key error
+    # Define a default value for rpm in case it's missing
+    rpm_value = data.get('rpm', "0")  # Use a default value if 'rpm' is not in data
 
     screen.fill(color_map['BLACK'])
     draw_rpm(screen, rpm_value)
-    draw_circles(screen, int(rpm_value) if rpm_value.isdigit() else 0)
-    for box in boxes:
-        box.draw(screen)
+    draw_circles(screen, int(rpm_value))
 
-    pygame.display.flip()
-    pygame.time.delay(100)
+    for box, key in zip(boxes, text_dict.keys()):
+        box.text = f"{key}: {data.get(key.lower(), 'N/A')}"  # Use get to avoid KeyErrors
 
     pygame.display.flip()
     pygame.time.delay(100)

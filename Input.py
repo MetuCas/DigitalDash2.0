@@ -49,15 +49,16 @@ def get_serial_data():
     return data
 
 def process_data(data):
-    # Ensure the keys exactly match what main.py will be looking for
-    processed_data = {k + 'F': format_output(int(v, 16)) for k, v in data.items()}
+    # Process the data to a simple format without adding 'F'
+    processed_data = {k: format_output(int(v, 16)) for k, v in data.items()}
     return processed_data
 
 def get_data():
     test_mode = read_config('Test Mode', 'Enabled').lower() == 'true'
     if test_mode:
         data = next(get_test_data())
-        return process_data(data)
+        print(f"Generated Test Data: {data}")  # Add this to see what's being generated
     else:
         data = get_serial_data()
-        return process_data(data)
+    return process_data(data)
+

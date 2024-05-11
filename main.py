@@ -41,13 +41,14 @@ color_map = {
 box_font_size = int(config.get('box_font_size', '40'))
 font_box = pygame.font.Font(None, box_font_size)
 
-# Initial text setup for boxes
+# Initial text setup for boxes with correct data keys
 text_dict = {
-    "MPH": "Speed: 0",
-    "Volt": "Voltage: 0",
-    "Oil Temp": "Oil Temp: 0°C",
-    "WTR": "Water Temp: 0°C",
-    "PSI": "Pressure: 0"
+    "RPM": "RPM: 0",
+    "Speed": "Speed: 0",
+    "Temp": "Temperature: 0°C",
+    "Pressure": "Pressure: 0",
+    "Voltage": "Voltage: 0",
+    "Oil Temp": "Oil Temp: 0°C"
 }
 
 # Box class definition
@@ -86,10 +87,10 @@ while running:
     # Update box texts
     try:
         for box, key in zip(boxes, text_dict.keys()):
-            value_key = key.lower().replace(' ', '') + 'F'  # key used in the data dictionary
+            value_key = key.lower().replace(' ', '') + 'F'  # Ensure the key transformation matches data keys
             box.text = f"{key}: {data[value_key]}"
     except KeyError as e:
-        print(f"Data key missing: {str(e)}")
+        print(f"Data key missing: {str(e)}")  # Helps diagnose any further key mismatches
 
     # Redraw the screen
     screen.fill(color_map['BLACK'])
@@ -99,8 +100,3 @@ while running:
 
     # Frame rate control
     pygame.time.delay(100)  # Refresh rate, adjust as needed
-
-
-# Quit Pygame
-pygame.quit()
-sys.exit()

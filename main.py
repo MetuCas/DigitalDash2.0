@@ -75,7 +75,7 @@ start_x = (screen_width - total_box_width) / 2
 for i, (key, value) in enumerate(text_dict.items()):
     box_x = start_x + i * (box_width + 10)
     box_y = screen_height - box_height - 10  # Position boxes at the bottom
-    boxes.append(Box(box_x, box_y, box_width, box_height, color_map['BLUE'], value))
+    boxes.append(Box(box_x, box_y, box_width, box_height, color_map['PURPLE'], value))
 
 def draw_rpm(surface, rpm_value):
     rpm_surface = font_rpm.render(f"RPM: {rpm_value}", True, color_map['WHITE'])

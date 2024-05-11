@@ -11,19 +11,20 @@ def parse_serial_data(line, key):
     processed_value = apply_operations(raw_value, operations)
     return processed_value
 
-def apply_operations(value, operations):
-    for operation in operations:
-        op, num = operation.strip().split(' ')
-        num = int(num)
-        if op == "Multiply":
-            value *= num
-        elif op == "Divide":
-            value //= num
-        elif op == "Add":
-            value += num
-        elif op == "Subtract":
-            value -= num
-    return value
+#to be implemented
+#def apply_operations(value, operations):
+#    for operation in operations:
+#        op, num = operation.strip().split(' ')
+#        num = int(num)
+#        if op == "Multiply":
+#            value *= num
+#        elif op == "Divide":
+#            value //= num
+#        elif op == "Add":
+#            value += num
+#        elif op == "Subtract":
+#            value -= num
+#    return value
 
 def format_output(value):
     output_format = read_config('Output Settings', 'OutputFormat').strip()
@@ -41,11 +42,11 @@ def get_serial_data():
     # Added parsing for 'voltage' and 'oil temp'
     data = {
         'rpm': parse_serial_data(line, "RPM"),
-        'speed': parse_serial_data(line, "Speed"),
-        'temp': parse_serial_data(line, "Temperature"),
-        'pressure': parse_serial_data(line, "Pressure"),
-        'voltage': parse_serial_data(line, "Voltage"),  # New
-        'oil_temp': parse_serial_data(line, "Oil Temperature")  # New
+        'speed': parse_serial_data(line, "KPH"),
+        'temp': parse_serial_data(line, "WTR"),
+        'pressure': parse_serial_data(line, "BAR"),
+        'voltage': parse_serial_data(line, "VLT"),  # New
+        'oil_temp': parse_serial_data(line, "OIL")  # New
     }
     return data
 

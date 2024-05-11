@@ -11,20 +11,20 @@ def parse_serial_data(line, key):
     processed_value = apply_operations(raw_value, operations)
     return processed_value
 
-#to be implemented
-#def apply_operations(value, operations):
-#    for operation in operations:
-#        op, num = operation.strip().split(' ')
-#        num = int(num)
-#        if op == "Multiply":
-#            value *= num
-#        elif op == "Divide":
-#            value //= num
-#        elif op == "Add":
-#            value += num
-#        elif op == "Subtract":
-#            value -= num
-#    return value
+#Not yet fully implemented
+def apply_operations(value, operations):
+    for operation in operations:
+        op, num = operation.strip().split(' ')
+        num = int(num)
+        if op == "Multiply":
+            value *= num
+        elif op == "Divide":
+            value //= num
+        elif op == "Add":
+            value += num
+        elif op == "Subtract":
+            value -= num
+    return value
 
 def format_output(value):
     output_format = read_config('Output Settings', 'OutputFormat').strip()

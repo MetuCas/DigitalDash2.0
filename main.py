@@ -38,14 +38,15 @@ color_map = {
 }
 
 # Font configurations
-box_font_size = int(config.get('box_font_size', '40'))
+rpm_font_size = 200  # Larger font for RPM in the center
+font_rpm = pygame.font.Font(None, rpm_font_size)
+box_font_size = 40
 font_box = pygame.font.Font(None, box_font_size)
 
-# Initial text setup for boxes with correct data keys
+# Initial text setup for boxes (except RPM)
 text_dict = {
-    "RPM": "RPM: 0",
     "Speed": "Speed: 0",
-    "Temp": "Temperature: 0°C",
+    "Temp": "Temp: 0°C",
     "Pressure": "Pressure: 0",
     "Voltage": "Voltage: 0",
     "Oil Temp": "Oil Temp: 0°C"
@@ -64,14 +65,40 @@ class Box:
         text_rect = text_surface.get_rect(center=self.rect.center)
         surface.blit(text_surface, text_rect)
 
-# Create box objects
+# Create box objects for bottom display
 boxes = []
 box_width = screen_width * 0.2
 box_height = 50
-box_x = (screen_width - box_width) / 2
-for i, key in enumerate(text_dict.keys()):
-    box_y = 100 + i * (box_height + 10)
-    boxes.append(Box(box_x, box_y, box_width, box_height, color_map['BLUE'], text_dict[key]))
+num_boxes = len(text_dict)
+total_box_width = num_boxes * (box_width + 10) - 10  # Adjust spacing between boxes
+start_x = (screen_width - total_box_width) / 2
+for i, (key, value) in enumerate(text_dict.items()):
+    box_x = start_x + i * (box_width + 10)
+    box_y = screen_height - box_height - 10  # Position boxes at the bottom
+    boxes.append(Box(box_x, box_y, box_width, box_height, color_map['BLUE'], value))
+
+def draw_rpm(surface, rpm_value):
+    rpm_surface = font_rpm.render(f"RPM: {rpm_value}", True, color_map['WHITE'])
+    rpm_rect = rpm_surface.get_rect(center=(screen_width // 2, screen_height // 4))  # Center top position
+    surface.blit(rpm_surface, rpm_rect)
+
+def draw_circles(surface, rpm_value):
+    radius = 20
+    gap = 10
+    total_width = 10 * (2 * radius + gap) - gap
+    start_x = (screen_width - total_width) // 2
+    for i in range(10):
+        x = start_x + i * (2 * radius + gap)
+        y = 50  # Top of the screen
+        color = color_map['GRAY']  # Default color
+        if rpm_value >= (i + 1) * 1000:
+            if i < 5:
+                color = color_map['GREEN']
+            elif i < 7:
+                color = color_map['YELLOW']
+            else:
+                color = color_map['RED']
+        pygame.draw.circle(surface, color, (x, y), radius)
 
 # Main event loop
 running = True
@@ -84,19 +111,23 @@ while running:
     # Fetch data
     data = get_data()
 
-    # Update box texts
+    # Update box texts and RPM display
     try:
+        rpm_value = data['rpmF']
         for box, key in zip(boxes, text_dict.keys()):
-            value_key = key.lower().replace(' ', '') + 'F'  # Ensure the key transformation matches data keys
-            box.text = f"{key}: {data[value_key]}"
+            box.text = f"{key}: {data[key.lower().replace(' ', '') + 'F']}"
     except KeyError as e:
-        print(f"Data key missing: {str(e)}")  # Helps diagnose any further key mismatches
+        print(f"Data key missing: {str(e)}")
 
-    # Redraw the screen
+    # Redraw everything
     screen.fill(color_map['BLACK'])
+    draw_rpm(screen, rpm_value)
+    draw_circles(screen, int(rpm_value))
     for box in boxes:
         box.draw(screen)
+
+    # Update display
     pygame.display.flip()
 
     # Frame rate control
-    pygame.time.delay(100)  # Refresh rate, adjust as needed
+    pygame.time.delay(100)  # Adjust as needed

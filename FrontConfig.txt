@@ -1,0 +1,12 @@
+# Colors
+box_color = BLUE
+rpm_color = RED
+bottom_gauge_color = YELLOW
+bottom_gauge_text_color = BLACK
+
+# Font sizes
+box_font_size = 40
+rpm_font_size = 300
+
+# Circle colors
+circle_colors = RED ORANGE YELLOW GREEN BLUE PURPLE

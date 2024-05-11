@@ -48,6 +48,7 @@ def get_serial_data():
         'voltage': parse_serial_data(line, "VLT"),  # New
         'oil_temp': parse_serial_data(line, "OIL")  # New
     }
+    print("Parsed data:", data)  # Debugging output
     return data
 
 

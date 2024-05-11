@@ -45,11 +45,11 @@ font_box = pygame.font.Font(None, box_font_size)
 
 # Initial text setup for boxes (except RPM)
 text_dict = {
-    "KPH": "NULL",
-    "WTR": "NULL",
-    "BAR": "NULL",
-    "VLT": "NULL",
-    "OIL": "NULL"
+    "KPH": "NULL  ",
+    "WTR": "NULL  ",
+    "BAR": "NULL  ",
+    "VLT": "NULL  ",
+    "OIL": "NULL  "
 }
 
 # Box class definition

@@ -100,6 +100,7 @@ while running:
 
     # Fetch data for each frame to update the display
     data = get_data()  # Make sure this line is correctly fetching data
+    print("Current Data:", data)  # Debug print to see the fetched data
 
     # Define a default value for rpm in case it's missing
     rpm_value = data.get('rpm', "0")  # Use a default value if 'rpm' is not in data

@@ -27,33 +27,24 @@ pygame.display.set_caption("Dashboard")
 # Define colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-GRAY = (150, 150, 150)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
-ORANGE = (255, 165, 0)
-PURPLE = (128, 0, 128)
 
 # Extract configurations
-box_color = eval(config.get('box_color', 'BLUE'))
-rpm_color = eval(config.get('rpm_color', 'RED'))
-bottom_gauge_color = eval(config.get('bottom_gauge_color', 'YELLOW'))
-bottom_gauge_text_color = eval(config.get('bottom_gauge_text_color', 'BLACK'))
+box_color = eval(config.get('box_color', 'WHITE'))
 box_font_size = int(config.get('box_font_size', '40'))
 rpm_font_size = int(config.get('rpm_font_size', '300'))
-circle_colors = [eval(color) for color in config.get('circle_colors', '').split() if color]
 
-# Define font for boxes
+# Define font for RPM and boxes
+font_rpm = pygame.font.Font(None, rpm_font_size)
 font_box = pygame.font.Font(None, box_font_size)
 
-# Define text for each box initially
+# Define text for RPM and each box initially
+rpm_text = "RPM: 1000"
 text_dict = {
-    "MPH": "50",
-    "Volt": "12",
-    "Oil": "75",
-    "WTR": "90",
-    "PSI": "30"
+    "Speed": "100 km/h",
+    "Volt": "12V",
+    "Oil Temp": "75°C",
+    "Water Temp": "90°C",
+    "Oil Pressure": "30 psi"
 }
 
 # Define box class
@@ -104,20 +95,22 @@ while running:
             running = False
         elif event.type == refresh_event:
             data = get_data()  # Assume get_data() returns a dictionary with the necessary values
-            # Update the text for each box based on new data
-            boxes[0].text = f"RPM: {data['rpmF']}"
-            boxes[1].text = f"Speed: {data['speedF']} km/h"
-            boxes[2].text = f"Engine Coolant Temp: {data['tempF']}°C"
-            boxes[3].text = f"Oil Pressure: {data['pressureF']} bar"
+            # Update RPM and the text for each box based on new data
+            rpm_text = f"RPM: {data['rpmF']}"
+            for box, key in zip(boxes, text_dict.keys()):
+                box.text = f"{key}: {data[key.lower() + 'F']}"
 
     # Clear the screen
     screen.fill(BLACK)
 
+    # Draw RPM in the center
+    rpm_surface = font_rpm.render(rpm_text, True, WHITE)
+    rpm_rect = rpm_surface.get_rect(center=(screen_width / 2, screen_height / 2))
+    screen.blit(rpm_surface, rpm_rect)
+
     # Draw updated boxes
     for box in boxes:
         box.draw(screen)
-
-    # Additional drawing logic here...
 
     # Update the display
     pygame.display.flip()

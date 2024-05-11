@@ -45,11 +45,11 @@ font_box = pygame.font.Font(None, box_font_size)
 
 # Initial text setup for boxes (except RPM)
 text_dict = {
-    "Speed": "NULL",
-    "Temp": "NULL",
-    "Pressure": "NULL",
-    "Voltage": "NULL",
-    "Oil Temp": "NULL"
+    "KPH": "NULL",
+    "WTR": "NULL",
+    "BAR": "NULL",
+    "VLT": "NULL",
+    "OIL": "NULL"
 }
 
 # Box class definition

@@ -99,17 +99,22 @@ while running:
             sys.exit()
 
     # Fetch data for each frame to update the display
-    data = get_data()  # Ensure this line is inside the while loop to refresh the data
+    data = get_data()  # Make sure this line is correctly fetching data
 
     # Define a default value for rpm in case it's missing
     rpm_value = data.get('rpm', "0")  # Use a default value if 'rpm' is not in data
 
     screen.fill(color_map['BLACK'])
+    
+    # Draw RPM and RPM circles
     draw_rpm(screen, rpm_value)
     draw_circles(screen, int(rpm_value))
 
+    # Update text and draw each box
     for box, key in zip(boxes, text_dict.keys()):
-        box.text = f"{key}: {data.get(key.lower(), 'N/A')}"  # Use get to avoid KeyErrors
+        box.text = f"{key}: {data.get(key.lower(), 'N/A')}"  # Update the text for each box
+        box.draw(screen)  # Draw the box after updating the text
 
+    # Update the display
     pygame.display.flip()
     pygame.time.delay(100)

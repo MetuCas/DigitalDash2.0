@@ -1,0 +1,4 @@
+open contab:
+  crontab -e
+Add this line:
+  @reboot /home/admin/DigitalDash2.0/AutoStart.sh

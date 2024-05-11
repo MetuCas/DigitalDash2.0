@@ -12,6 +12,18 @@ def load_config(filename):
                 config[key.strip()] = value.strip()
     return config
 
+color_map = {
+    'BLACK': (0, 0, 0),
+    'WHITE': (255, 255, 255),
+    'BLUE': (0, 0, 255),
+    'GRAY': (150, 150, 150),
+    'RED': (255, 0, 0),
+    'GREEN': (0, 255, 0),
+    'YELLOW': (255, 255, 0),
+    'ORANGE': (255, 165, 0),
+    'PURPLE': (128, 0, 128)
+}
+
 # Load configuration from file
 config = load_config('FrontConfig.txt')
 
@@ -24,12 +36,8 @@ screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Dashboard")
 
-# Define colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
 # Extract configurations
-box_color = eval(config.get('box_color', 'WHITE'))
+box_color = color_map.get(config.get('box_color', 'WHITE'), (255, 255, 255))
 box_font_size = int(config.get('box_font_size', '40'))
 rpm_font_size = int(config.get('rpm_font_size', '300'))
 
@@ -93,7 +101,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == refresh_event:
+        elif event.type is refresh_event:
             data = get_data()  # Assume get_data() returns a dictionary with the necessary values
             # Update RPM and the text for each box based on new data
             rpm_text = f"RPM: {data['rpmF']}"
@@ -101,10 +109,10 @@ while running:
                 box.text = f"{key}: {data[key.lower() + 'F']}"
 
     # Clear the screen
-    screen.fill(BLACK)
+    screen.fill(color_map['BLACK'])
 
     # Draw RPM in the center
-    rpm_surface = font_rpm.render(rpm_text, True, WHITE)
+    rpm_surface = font_rpm.render(rpm_text, True, color_map['WHITE'])
     rpm_rect = rpm_surface.get_rect(center=(screen_width / 2, screen_height / 2))
     screen.blit(rpm_surface, rpm_rect)
 

@@ -98,30 +98,26 @@ while running:
             pygame.quit()
             sys.exit()
 
-    # Fetch data for each frame to update the display
-    data = get_data()  # Make sure this line is correctly fetching data
-    print("Current Data:", data)  # Debug print to see the fetched data
-
-    # Define a default value for rpm in case it's missing
-    rpm_value = data.get('rpm', "0")  # Use a default value if 'rpm' is not in data
+    data = get_data()  # Fetch data
+    print("Current Data:", data)  # Debug print
 
     screen.fill(color_map['BLACK'])
-    
-    # Draw RPM and RPM circles
+    rpm_value = data.get('rpm', "0")  # Default if missing
     draw_rpm(screen, rpm_value)
     draw_circles(screen, int(rpm_value))
 
-    # Update text and draw each box
     for box, key in zip(boxes, text_dict.keys()):
-    # Ensure lowercase key usage matches the dictionary keys from Input.py
-    data_key = key.lower()  # Adjust if your data keys are differently formatted
-    if data_key in data:
-        box.text = f"{key}: {data[data_key]}"
-    else:
-        print(f"Missing key in data: {data_key}")  # Debugging missing keys
-        box.text = f"{key}: N/A"  # Update to show 'N/A' if key is missing
+        data_key = key.lower()
+        if data_key in data:
+            box.text = f"{key}: {data[data_key]}"
+            print(f"Updated {key} box text to: {box.text}")  # Confirm text update
+        else:
+            box.text = f"{key}: N/A"
+            print(f"Missing key in data: {data_key}")
 
+    for box in boxes:
+        box.draw(screen)  # Ensure this is being called
 
-    # Update the display
     pygame.display.flip()
-    pygame.time.delay(100)
+    pygame.time.delay(100)  # Consider adjusting this if updates seem delayed
+

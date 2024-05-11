@@ -113,8 +113,14 @@ while running:
 
     # Update text and draw each box
     for box, key in zip(boxes, text_dict.keys()):
-        box.text = f"{key}: {data.get(key.lower(), 'N/A')}"  # Update the text for each box
-        box.draw(screen)  # Draw the box after updating the text
+    # Ensure lowercase key usage matches the dictionary keys from Input.py
+    data_key = key.lower()  # Adjust if your data keys are differently formatted
+    if data_key in data:
+        box.text = f"{key}: {data[data_key]}"
+    else:
+        print(f"Missing key in data: {data_key}")  # Debugging missing keys
+        box.text = f"{key}: N/A"  # Update to show 'N/A' if key is missing
+
 
     # Update the display
     pygame.display.flip()

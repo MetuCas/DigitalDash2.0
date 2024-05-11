@@ -38,13 +38,17 @@ def format_output(value):
 def get_serial_data():
     ser = serial.Serial('COM3', 9600, timeout=1)
     line = ser.readline().decode('utf-8').strip()
+    # Added parsing for 'voltage' and 'oil temp'
     data = {
         'rpm': parse_serial_data(line, "RPM"),
         'speed': parse_serial_data(line, "Speed"),
         'temp': parse_serial_data(line, "Temperature"),
-        'pressure': parse_serial_data(line, "Pressure")
+        'pressure': parse_serial_data(line, "Pressure"),
+        'voltage': parse_serial_data(line, "Voltage"),  # New
+        'oil_temp': parse_serial_data(line, "Oil Temperature")  # New
     }
     return data
+
 
 def process_data(data):
     processed_data = {k + 'F': format_output(int(v, 16)) for k, v in data.items()}

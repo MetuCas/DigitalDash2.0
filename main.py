@@ -94,7 +94,7 @@ def draw_circles(surface, rpm_value):
 running = True
 while running:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type is pygame.QUIT:
             pygame.quit()
             sys.exit()
 
@@ -103,9 +103,13 @@ while running:
     try:
         rpm_value = data['rpmF']
         for box, key in zip(boxes, text_dict.keys()):
-            box.text = f"{key}: {data[key.lower() + 'F']}"
+            formatted_key = key + 'F'
+            if formatted_key in data:
+                box.text = f"{key}: {data[formatted_key]}"
+            else:
+                print(f"Missing key in data: {formatted_key}")  # Debug missing keys
     except KeyError as e:
-        print(f"Data key missing: {str(e)}")
+        print(f"Data key missing: {str(e)}")  # General key error
 
     screen.fill(color_map['BLACK'])
     draw_rpm(screen, rpm_value)

@@ -49,6 +49,7 @@ def get_serial_data():
     return data
 
 def process_data(data):
+    # Ensure the keys exactly match what main.py will be looking for
     processed_data = {k + 'F': format_output(int(v, 16)) for k, v in data.items()}
     return processed_data
 

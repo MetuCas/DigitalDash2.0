@@ -45,17 +45,6 @@ text_dict = {
     "OIL": "NULL"
 }
 
-# Ensure data keys are accessed directly as they are processed in Input.py
-try:
-    rpm_value = data['rpm']
-    for box, key in zip(boxes, text_dict.keys()):
-        if key.lower() in data:
-            box.text = f"{key}: {data[key.lower()]}"
-        else:
-            print(f"Missing key in data: {key.lower()}")  # This will clarify if any key is missing directly
-except KeyError as e:
-    print(f"Data key missing: {str(e)}")
-
 class Box:
     def __init__(self, x, y, width, height, color, text):
         self.rect = pygame.Rect(x, y, width, height)
@@ -105,11 +94,12 @@ def draw_circles(surface, rpm_value):
 running = True
 while running:
     for event in pygame.event.get():
-        if event.type is pygame.QUIT:
+        if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-    data = get_data()
+    # Fetch data for each frame to update the display
+    data = get_data()  # Make sure this line is inside the while loop to refresh the data
 
     try:
         rpm_value = data['rpmF']

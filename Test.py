@@ -20,11 +20,11 @@ def get_test_data():
         # Updated data dictionary to include new keys
         data = {
             'rpm': selected_data[0],
-            'speed': selected_data[1],
-            'temp': selected_data[2],
-            'pressure': selected_data[3],
-            'voltage': selected_data[4],  # New
-            'oil_temp': selected_data[5]  # New
+            'kph': selected_data[1],
+            'wtr': selected_data[2],
+            'bar': selected_data[3],
+            'vlt': selected_data[4],  # New
+            'oil': selected_data[5]  # New
         }
         print(f"Generated Test Data: {data}")  # Debug output
         time.sleep(test_refresh_rate / 1000.0)  # Convert ms to seconds

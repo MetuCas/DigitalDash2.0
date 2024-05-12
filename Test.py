@@ -1,9 +1,9 @@
-# Test.py created by Matthew Casinias
+# Test.py created by Matthew Casinias and Jarred Javier
 import time
 from config_utils import read_config
 from itertools import cycle
 
-# Updated test data to include 'voltage' and 'oil temp'
+# Mimicking raw data output from Arduino
 test_data = cycle([
     ["0x3E8", "0x0", "0x32", "0xC", "0x50", "0x78"],
     ["0x7D0", "0x14", "0x3C", "0xC", "0x51", "0x79"],
@@ -23,9 +23,9 @@ def get_test_data():
             'kph': selected_data[1],
             'wtr': selected_data[2],
             'bar': selected_data[3],
-            'vlt': selected_data[4],  # New
-            'oil': selected_data[5]  # New
+            'vlt': selected_data[4],
+            'oil': selected_data[5] 
         }
-        print(f"Generated Test Data: {data}")  # Debug output
+        print(f"Generated Test Data: {data}")  # Debuging output
         time.sleep(test_refresh_rate / 1000.0)  # Convert ms to seconds
         yield data

@@ -1,3 +1,4 @@
+#Created by Matthew Casinias
 import configparser
 
 def read_config(section, key):

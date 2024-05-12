@@ -1,4 +1,4 @@
-# Test.py
+# Test.py created by Matthew Casinias
 import time
 from config_utils import read_config
 from itertools import cycle
